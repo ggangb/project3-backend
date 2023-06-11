@@ -45,12 +45,8 @@ public class HomeController {
 		ResponseEntity<String> result = restTemplate.exchange(req,  String.class);
 		String datas = result.getBody().replaceAll("&apos;", "'");
 		datas = datas.replaceAll("&quot;", "");
-		datas = datas.replaceAll("</b>", "");
-		datas = datas.replaceAll("<b>", "");
-		
-		System.out.println(datas);
-		
-		
+		datas = datas.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
+			
 		return datas;
 	}
 }
