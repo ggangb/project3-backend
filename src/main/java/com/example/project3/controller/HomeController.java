@@ -3,16 +3,17 @@ package com.example.project3.controller;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,23 +38,40 @@ public class HomeController {
 		String datas = result.getBody().replaceAll("&quot;", "")
 										.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "")
 										.replaceAll("&apos;", "'");
+		System.out.println(datas);
 		return datas;
 	}
 
 	@GetMapping("/table")
-	public String table() {
-		String query = "PL";
+	public List<Object> table() throws ParseException {
+//		String query = "PL";
+		String[] query = {"PL","SA","BL1","PD","FL1"};
+		String temp = "";
+		List<Object> result = new ArrayList<>(); 
+				
+		for(String s : query) {
+			URI uri = UriComponentsBuilder
+					.fromUriString("https://api.football-data.org/v4/competitions/" + s + "/standings").encode().build()
+					.toUri();
+			RestTemplate restTemplate = new RestTemplate();
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+					.build();
+			ResponseEntity<Object> res = restTemplate.exchange(req, Object.class);
+			result.add(res.getBody());
+			System.out.println(result);
+		}
+		
+		
+//		URI uri = UriComponentsBuilder
+//				.fromUriString("https://api.football-data.org/v4/competitions/" + query + "/standings").encode().build()
+//				.toUri();
+//		RestTemplate restTemplate = new RestTemplate();
+//
+//		RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+//				.build();
+//		ResponseEntity<String> result = restTemplate.exchange(req, String.class);
 
-		URI uri = UriComponentsBuilder
-				.fromUriString("https://api.football-data.org/v4/competitions/" + query + "/standings").encode().build()
-				.toUri();
-		RestTemplate restTemplate = new RestTemplate();
-
-		RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
-				.build();
-		ResponseEntity<String> result = restTemplate.exchange(req, String.class);
-
-		return result.getBody();
+		return result;
 	}
 
 }
