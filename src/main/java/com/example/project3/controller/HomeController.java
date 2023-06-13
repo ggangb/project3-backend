@@ -14,11 +14,13 @@ import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@RestController
+@RestController()
+@RequestMapping("/api")
 public class HomeController {
 
 	@GetMapping("/news")
@@ -46,21 +48,31 @@ public class HomeController {
 	public List<Object> table() throws ParseException {
 //		String query = "PL";
 		String[] query = {"PL","SA","BL1","PD","FL1"};
-		String temp = "";
 		List<Object> result = new ArrayList<>(); 
-				
+		URI uri ;
+		RestTemplate restTemplate = new RestTemplate();
+		RequestEntity<Void> req;
+		ResponseEntity<Object>	res;
+		
 		for(String s : query) {
-			URI uri = UriComponentsBuilder
+			 uri = UriComponentsBuilder
 					.fromUriString("https://api.football-data.org/v4/competitions/" + s + "/standings").encode().build()
 					.toUri();
-			RestTemplate restTemplate = new RestTemplate();
-			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+			restTemplate = new RestTemplate();
+			req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
 					.build();
-			ResponseEntity<Object> res = restTemplate.exchange(req, Object.class);
+			res = restTemplate.exchange(req, Object.class);
 			result.add(res.getBody());
-			System.out.println(result);
+			 uri = UriComponentsBuilder
+					.fromUriString("https://api.football-data.org/v4/competitions/" + s + "/scorers").encode().build()
+					.toUri();
+			restTemplate = new RestTemplate();
+			req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+					.build();
+			res = restTemplate.exchange(req, Object.class);
+			result.add(res.getBody());
 		}
-		
+
 		
 //		URI uri = UriComponentsBuilder
 //				.fromUriString("https://api.football-data.org/v4/competitions/" + query + "/standings").encode().build()
