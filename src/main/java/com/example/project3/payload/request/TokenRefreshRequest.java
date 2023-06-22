@@ -4,7 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public class TokenRefreshRequest {
 	 @NotBlank
-	  private String refreshToken;
+	 private String refreshToken;
+	 
+	 @NotBlank
+	 private String username;
 
 	  public String getRefreshToken() {
 	    return refreshToken;
@@ -13,4 +16,14 @@ public class TokenRefreshRequest {
 	  public void setRefreshToken(String refreshToken) {
 	    this.refreshToken = refreshToken;
 	  }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	  
+	  
 }

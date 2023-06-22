@@ -1,7 +1,9 @@
 package com.example.project3.controller;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,7 +62,7 @@ public class UserController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+		
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -75,6 +77,7 @@ public class UserController {
 				.collect(Collectors.toList());
 		
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+		
 
 		return ResponseEntity.ok(new JwtResponse(jwt, 
 												refreshToken.getToken(),
@@ -104,19 +107,21 @@ public class UserController {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new MessageResponse("이미 사용중인 아이디입니다."));
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+					.body(new MessageResponse("이미 사용중인 이메일입니다."));
 		}
 
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
 							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()));
+							 encoder.encode(signUpRequest.getPassword()),
+							 signUpRequest.getPhone()
+							 );
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();
@@ -151,6 +156,14 @@ public class UserController {
 		user.setRoles(roles);
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new MessageResponse("회원가입 완료"));
 	}
+	
+	@PostMapping("/signout")
+	  public ResponseEntity<?> logoutUser(@RequestBody HashMap<String,Object> user) {
+		
+		String userId = (String) user.get("id");
+	    refreshTokenService.deleteByUserId(userId);
+	    return ResponseEntity.ok(new MessageResponse("로그아웃 성공"));
+	  }
 }

@@ -13,8 +13,8 @@ import jakarta.validation.constraints.Size;
 
 @Document(collection = "users")
 public class User {
-	@Id
-	private String id;
+		@Id
+		private String id;
 	
 	  @NotBlank
 	  @Size(max = 20)
@@ -28,6 +28,9 @@ public class User {
 	  @NotBlank
 	  @Size(max = 120)
 	  private String password;
+	  
+	  @NotBlank
+	  private String phone;
 
 	  @DBRef
 	  private Set<Role> roles = new HashSet<>();
@@ -35,10 +38,11 @@ public class User {
 	  public User() {
 	  }
 
-	  public User(String username, String email, String password) {
+	  public User(String username, String email, String password, String phone) {
 	    this.username = username;
 	    this.email = email;
 	    this.password = password;
+	    this.phone = phone;
 	  }
 
 	  public String getId() {
@@ -72,8 +76,17 @@ public class User {
 	  public void setPassword(String password) {
 	    this.password = password;
 	  }
+	  	  
 
-	  public Set<Role> getRoles() {
+	  public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public Set<Role> getRoles() {
 	    return roles;
 	  }
 
