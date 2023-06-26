@@ -6,7 +6,6 @@ public class TokenRefreshRequest {
 	 @NotBlank
 	 private String refreshToken;
 	 
-	 @NotBlank
 	 private String username;
 
 	  public String getRefreshToken() {

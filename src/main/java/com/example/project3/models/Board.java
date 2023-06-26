@@ -1,5 +1,7 @@
 package com.example.project3.models;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +15,12 @@ public class Board {
 	private String content;
 	
 	private String username;
+	
+	private Date date;
+	
+	private int view;
+	
+	private int recommend;
 	
 	
 
@@ -53,6 +61,31 @@ public class Board {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public int getView() {
+		return view;
+	}
+
+	public void setView(int view) {
+		this.view = view;
+	}
+
+	public int getRecommend() {
+		return recommend;
+	}
+
+	public void setRecommend(int recommend) {
+		this.recommend = recommend;
+	}
+	
 	
 	
 }

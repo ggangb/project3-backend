@@ -40,7 +40,7 @@ import com.example.project3.security.service.UserDetailsImpl;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class UserController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -164,6 +164,6 @@ public class UserController {
 		
 		String userId = (String) user.get("id");
 	    refreshTokenService.deleteByUserId(userId);
-	    return ResponseEntity.ok(new MessageResponse("로그아웃 성공"));
+	    return ResponseEntity.ok(new MessageResponse("로그아웃 되었습니다."));
 	  }
 }

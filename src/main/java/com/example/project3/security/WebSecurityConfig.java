@@ -19,7 +19,10 @@ import com.example.project3.security.jwt.AuthTokenFilter;
 import com.example.project3.security.service.UserDetailsServiceImpl;
 
 @Configuration
-
+@EnableGlobalMethodSecurity(
+		// securedEnabled = true,
+		// jsr250Enabled = true,
+		prePostEnabled = true)
 public class WebSecurityConfig {
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
@@ -51,18 +54,19 @@ public class WebSecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.requestMatchers("/api/**").permitAll().anyRequest()
-				.authenticated();
+	    http.cors().and().csrf().disable()
+	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+	        .authorizeHttpRequests().requestMatchers("/api/auth/**").permitAll()
+	        .anyRequest().authenticated();
+	    
+	    http.authenticationProvider(authenticationProvider());
 
-		http.authenticationProvider(authenticationProvider());
-
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
-		return http.build();
-	}
+	    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+	    
+	    return http.build();
+	  }
 }
