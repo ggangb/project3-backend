@@ -18,9 +18,9 @@ public class Board {
 	
 	private Date date;
 	
-	private int view;
+	private int view = 0;
 	
-	private int recommend;
+	private int recommend = 0;
 	
 	
 
