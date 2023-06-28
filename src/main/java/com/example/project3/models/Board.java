@@ -16,7 +16,7 @@ public class Board {
 	
 	private String username;
 	
-	private Date date;
+	private String date;
 	
 	private int view = 0;
 	
@@ -24,11 +24,13 @@ public class Board {
 	
 	
 
-	public Board(String title, String content, String username) {
+	public Board(String title, String content, String username, String date) {
 		this.title = title;
 		this.content = content;
 		this.username = username;
+		this.date = date;
 	}
+
 
 	public String getId() {
 		return id;
@@ -62,11 +64,11 @@ public class Board {
 		this.username = username;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

@@ -10,6 +10,8 @@ public class BoardSaveRequest {
 	private String content;
 	@NotBlank
 	private String username;
+	@NotBlank
+	private String date;
 	
 	public String getTitle() {
 		return title;
@@ -29,6 +31,13 @@ public class BoardSaveRequest {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
 	
 	
 

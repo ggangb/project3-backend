@@ -36,10 +36,12 @@ public class BoardController {
 	
 	@PostMapping("/board")
 	public ResponseEntity<?> boardSave(@RequestBody BoardSaveRequest boardSave) {
+		
 		Board board = new Board(boardSave.getTitle(),
 								boardSave.getContent(),
-								boardSave.getUsername());
-				
+								boardSave.getUsername(),
+								boardSave.getDate());
+		System.out.println(board);
 		boardRepository.save(board);
 		
 		return ResponseEntity.ok(new MessageResponse("글 등록완료"));
