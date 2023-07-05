@@ -8,5 +8,6 @@ import com.example.project3.models.Board;
 
 public interface BoardRepository extends MongoRepository<Board, String> {
 	List<Board> findAllByOrderByIdDesc();
+	Board findByIdx(Long idx);
 	
 }

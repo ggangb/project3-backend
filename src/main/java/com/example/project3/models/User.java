@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,8 +14,12 @@ import jakarta.validation.constraints.Size;
 
 @Document(collection = "users")
 public class User {
+	@Transient
+	public static final String SEQUENCE_NAME = "users_sequence";
 		@Id
 		private String id;
+		
+		private Long idx;
 	
 	  @NotBlank
 	  @Size(max = 20)
@@ -52,8 +57,17 @@ public class User {
 	  public void setId(String id) {
 	    this.id = id;
 	  }
+	  
 
-	  public String getUsername() {
+	  public Long getIdx() {
+		return idx;
+	}
+
+	public void setIdx(Long idx) {
+		this.idx = idx;
+	}
+
+	public String getUsername() {
 	    return username;
 	  }
 

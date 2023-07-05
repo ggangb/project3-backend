@@ -3,12 +3,17 @@ package com.example.project3.models;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "board")
 public class Board {
+	@Transient
+	public static final String SEQUENCE_NAME = "board_sequence";
 	@Id
 	private String id;
+	
+	private Long idx;
 	
 	private String title;
 	
@@ -39,6 +44,17 @@ public class Board {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+
+	public Long getIdx() {
+		return idx;
+	}
+
+
+	public void setIdx(Long idx) {
+		this.idx = idx;
+	}
+
 
 	public String getTitle() {
 		return title;

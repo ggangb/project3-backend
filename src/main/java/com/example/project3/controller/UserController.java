@@ -35,6 +35,7 @@ import com.example.project3.repository.UserRepository;
 import com.example.project3.security.jwt.JwtUtils;
 import com.example.project3.security.jwt.exception.TokenRefreshException;
 import com.example.project3.security.service.RefreshTokenService;
+import com.example.project3.security.service.SequenceGeneratorService;
 import com.example.project3.security.service.UserDetailsImpl;
 
 import jakarta.validation.Valid;
@@ -53,6 +54,9 @@ public class UserController {
 
 	@Autowired
 	PasswordEncoder encoder;
+	
+	@Autowired
+	SequenceGeneratorService sequenceGeneratorService;
 	
 	@Autowired
 	RefreshTokenService refreshTokenService;
@@ -123,6 +127,7 @@ public class UserController {
 							 encoder.encode(signUpRequest.getPassword()),
 							 signUpRequest.getPhone()
 							 );
+		user.setIdx(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -28,9 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.example.project3.models.Board;
+import com.example.project3.models.User;
 import com.example.project3.payload.request.BoardSaveRequest;
 import com.example.project3.payload.response.MessageResponse;
 import com.example.project3.repository.BoardRepository;
+import com.example.project3.security.service.SequenceGeneratorService;
 
 @RestController
 @RequestMapping("/api")
@@ -38,6 +41,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	@Autowired
+	SequenceGeneratorService sequenceGeneratorService;
 	
 	@GetMapping("/board")
 	public Page<Board> findAll(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable) {
@@ -53,6 +59,8 @@ public class BoardController {
 								boardSave.getContent(),
 								boardSave.getUsername(),
 								boardSave.getDate());
+		
+		board.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
 		System.out.println(board);
 		boardRepository.save(board);
 		
@@ -60,12 +68,25 @@ public class BoardController {
 	}
 	
 	@GetMapping("/getcontent/{contentId}")
-	public Optional<Board> getContent(@PathVariable String contentId) {
+	public Board getContent(@PathVariable Long contentId) {
 		System.out.println(contentId);
+		Board board = boardRepository.findByIdx(contentId);
+		board.setView(board.getView()+1);
+		boardRepository.save(board);
+		return boardRepository.findByIdx(contentId);
 		
-		
-		return boardRepository.findById(contentId);
-		
+	}
+	@GetMapping("/recommend/{contentId}")
+	public void recommendContent(@PathVariable Long contentId) {
+		Board board = boardRepository.findByIdx(contentId);
+		board.setRecommend(board.getRecommend()+1);
+		boardRepository.save(board);
+	}
+	
+	@GetMapping("/getrank")
+	public List<Board> findRank() {
+		List<Board> rankPage = boardRepository.findAll(Sort.by("recommend")).subList(0, 5);
+		return rankPage;
 	}
 	
 	@PostMapping("/imageupload")
