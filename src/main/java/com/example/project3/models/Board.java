@@ -15,6 +15,10 @@ public class Board {
 	
 	private Long idx;
 	
+	private Long prev;
+	
+	private Long next;
+	
 	private String title;
 	
 	private String content;
@@ -53,6 +57,27 @@ public class Board {
 
 	public void setIdx(Long idx) {
 		this.idx = idx;
+	}
+
+	
+
+	public Long getPrev() {
+		return prev;
+	}
+
+
+	public void setPrev(Long prev) {
+		this.prev = prev;
+	}
+
+
+	public Long getNext() {
+		return next;
+	}
+
+
+	public void setNext(Long next) {
+		this.next = next;
 	}
 
 

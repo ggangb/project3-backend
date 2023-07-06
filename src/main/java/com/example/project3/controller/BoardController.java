@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,22 @@ public class BoardController {
 		Board board = boardRepository.findByIdx(contentId);
 		board.setView(board.getView()+1);
 		boardRepository.save(board);
-		return boardRepository.findByIdx(contentId);
+		try {
+			List<Board> boardPrev = boardRepository.findPrevByIdx(contentId);
+			board.setPrev(boardPrev.get(0).getIdx());
+			System.out.println("prev : " + boardPrev.get(0).getIdx());
+		}catch(IndexOutOfBoundsException e) {
+			System.out.println("마지막 글 입니다.");
+		} 
+		try {
+			List<Board> boardNext = boardRepository.findNextByIdx(contentId);
+			board.setNext(boardNext.get(0).getIdx());
+			System.out.println("next : " + boardNext.get(0).getIdx());
+		}catch(IndexOutOfBoundsException e) {
+			System.out.println("첫번째 글 입니다.");
+		} 
+		
+		return board;
 		
 	}
 	@GetMapping("/recommend/{contentId}")
@@ -84,8 +100,9 @@ public class BoardController {
 	}
 	
 	@GetMapping("/getrank")
-	public List<Board> findRank() {
-		List<Board> rankPage = boardRepository.findAll(Sort.by("recommend")).subList(0, 5);
+	public List<Board> recommendRank() {
+		List<Board> rankPage = boardRepository.findAllByOrderByRecommend(Sort.by(Direction.DESC, "recommend"));
+		
 		return rankPage;
 	}
 	
