@@ -1,9 +1,11 @@
 package com.example.project3.models;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "board")
@@ -30,6 +32,9 @@ public class Board {
 	private int view = 0;
 	
 	private int recommend = 0;
+	
+	@DBRef
+	private List<Upment> upment;
 	
 	
 
@@ -128,6 +133,18 @@ public class Board {
 	public void setRecommend(int recommend) {
 		this.recommend = recommend;
 	}
+
+
+	public List<Upment> getUpment() {
+		return upment;
+	}
+
+
+	public void setUpment(List<Upment> upment) {
+		this.upment = upment;
+	}
+	
+	
 	
 	
 	

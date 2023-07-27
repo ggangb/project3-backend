@@ -19,4 +19,5 @@ public interface BoardRepository extends MongoRepository<Board, String> {
 	List<Board> findPrevByIdx(Long idx);
 	
 	List<Board> findAllByOrderByRecommend(Sort sort);
+	
 }
