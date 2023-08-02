@@ -9,4 +9,6 @@ import com.example.project3.models.Downment;
 public interface DownmentRepository extends MongoRepository<Downment, String> {
 	
 	List<Downment> findByUpmentId(String upmentId);
+	
+	List<Downment>findByPostId(String postId);
 }

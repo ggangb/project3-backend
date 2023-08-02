@@ -18,6 +18,8 @@ public class Downment {
 		
 		private String date;
 		
+		private String postId;
+		
 		private String upmentId;
 	}
 
