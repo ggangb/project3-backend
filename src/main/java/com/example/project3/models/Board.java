@@ -33,8 +33,6 @@ public class Board {
 	
 	private int recommend = 0;
 	
-	@DBRef
-	private List<Upment> upment;
 	
 	
 
@@ -135,14 +133,6 @@ public class Board {
 	}
 
 
-	public List<Upment> getUpment() {
-		return upment;
-	}
-
-
-	public void setUpment(List<Upment> upment) {
-		this.upment = upment;
-	}
 	
 	
 	

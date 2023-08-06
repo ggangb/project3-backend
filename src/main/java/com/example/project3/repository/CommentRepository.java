@@ -2,19 +2,21 @@ package com.example.project3.repository;
 
 import java.util.List;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
-import com.example.project3.models.Downment;
-import com.example.project3.models.Upment;
+import com.example.project3.models.Board;
+import com.example.project3.models.Comment;
 
-public interface CommentRepository extends MongoRepository<Upment, String> {
+public interface CommentRepository extends MongoRepository<Comment, String> {
 	
-	List<Upment> findByPostId(String postId);
+		List<Comment>  findAllOrderByReforder(Sort sort);
+		
+		List<Comment> findByRefOrderByReforder(Long ref);
 
-	Page<Upment> findAllBypostId(String postId, Pageable pageable);
-	
-	
 	
 }
