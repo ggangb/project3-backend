@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Builder.Default;
 import lombok.Data;
 
 @Document(collection = "comment")
@@ -29,6 +28,8 @@ public class Comment {
 	private int level;
 
 	private int reforder;
+	
+	private String deleteYn = "N";
 	
 	
 	private String parentnum;

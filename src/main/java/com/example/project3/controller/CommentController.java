@@ -5,11 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,9 +57,11 @@ public class CommentController {
 		return ResponseEntity.ok(new MessageResponse("댓글 등록완료"));
 	}
 	
-	@GetMapping("/comment")
-	public List<Comment> commentList() {
-		List<Comment> commentAll = commentRepository.findAll();
+	@GetMapping("/comment/{postId}")
+	public Page<Comment> commentList(@PathVariable String postId, @PageableDefault(sort = {"ref"},direction = Sort.Direction.DESC ) Pageable pageable) {
+		System.out.println(postId);
+		System.out.println(pageable);
+		Page<Comment> commentAll = commentRepository.findAllByPostId(postId, pageable);
 		
 		return commentAll;
 	}
@@ -109,6 +116,25 @@ public class CommentController {
 		return ResponseEntity.ok(new MessageResponse("댓글 등록완료"));
 		
 	}
+	
+	@PutMapping("/updaterecomment")
+	public ResponseEntity<?> recommentUpdate(@RequestBody Comment comment) {
+		commentRepository.save(comment);
+		return ResponseEntity.ok(new MessageResponse("댓글 수정완료"));
+	}
+	
+	@PutMapping("/deletecomment/{contentId}")
+	public ResponseEntity<?> commentDelete(@PathVariable String contentId) {
+		Optional<Comment> c = commentRepository.findById(contentId);
+		Comment c1 = c.get();
+		c1.setText("[삭제된 댓글입니다.]");
+		c1.setDeleteYn("Y");
+		commentRepository.save(c1);
+		
+		return ResponseEntity.ok(new MessageResponse("댓글 삭제완료"));
+	}
+	
+	
 
 
 

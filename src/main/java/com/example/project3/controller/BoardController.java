@@ -20,9 +20,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,7 @@ import com.example.project3.models.User;
 import com.example.project3.payload.request.BoardSaveRequest;
 import com.example.project3.payload.response.MessageResponse;
 import com.example.project3.repository.BoardRepository;
+import com.example.project3.repository.CommentRepository;
 import com.example.project3.security.service.SequenceGeneratorService;
 
 import jakarta.servlet.http.Cookie;
@@ -47,6 +50,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	@Autowired
+	private CommentRepository commentRepository;
 	
 	@Autowired
 	SequenceGeneratorService sequenceGeneratorService;
@@ -144,6 +150,7 @@ public class BoardController {
 		return rankPage;
 	}
 	
+	
 	@PostMapping("/imageupload")
 	public File imageSave(MultipartHttpServletRequest request) throws Exception {
 		MultipartFile uploadFile = request.getFile("upload");
@@ -159,6 +166,23 @@ public class BoardController {
 		System.out.println(saveFile);
 		
 		return saveFile;
+	}
+	
+	@DeleteMapping("/deleteboard/{postId}")
+	public ResponseEntity<?> boardDelete(@PathVariable String postId) {
+		System.out.println(postId);
+		boardRepository.deleteById(postId);
+		commentRepository.deleteByPostId(postId);
+		
+		return ResponseEntity.ok(new MessageResponse("글 삭제완료"));
+	}
+	
+	@PutMapping("/updateboard")
+	public ResponseEntity<?> boardUpdate(@RequestBody Board board) {
+		System.out.println(board);
+		boardRepository.save(board);
+		
+		return ResponseEntity.ok(new MessageResponse("글 수정완료"));
 	}
 	
 }
