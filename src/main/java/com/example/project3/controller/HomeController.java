@@ -40,6 +40,47 @@ public class HomeController {
 		System.out.println(datas);
 		return datas;
 	}
+	@GetMapping("/news/{keyword}")
+	public String keywordNews(@PathVariable String keyword) {
+		
+		if(keyword == "") {
+			String query = "\"해외축구\"";
+			ByteBuffer buffer = StandardCharsets.UTF_8.encode(query);
+			String encode = StandardCharsets.UTF_8.decode(buffer).toString();
+
+			URI uri = UriComponentsBuilder.fromUriString("https://openapi.naver.com").path("/v1/search/news.json")
+					.queryParam("query", encode).encode().build().toUri();
+
+			RestTemplate restTemplate = new RestTemplate();
+
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Naver-Client-Id", "8WncpxE9lBzklQhOajm2")
+					.header("X-Naver-Client-Secret", "MuNmGX8Dwc").build();
+			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+			String datas = result.getBody().replaceAll("&quot;", "")
+											.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "")
+											.replaceAll("&apos;", "'");
+			System.out.println(datas);
+			return datas;
+		} else {
+			ByteBuffer buffer = StandardCharsets.UTF_8.encode(keyword);
+			String encode = StandardCharsets.UTF_8.decode(buffer).toString();
+
+			URI uri = UriComponentsBuilder.fromUriString("https://openapi.naver.com").path("/v1/search/news.json")
+					.queryParam("query", encode).encode().build().toUri();
+
+			RestTemplate restTemplate = new RestTemplate();
+
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Naver-Client-Id", "8WncpxE9lBzklQhOajm2")
+					.header("X-Naver-Client-Secret", "MuNmGX8Dwc").build();
+			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+			String datas = result.getBody().replaceAll("&quot;", "")
+											.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "")
+											.replaceAll("&apos;", "'");
+			System.out.println(datas);
+			return datas;
+		}
+		
+	}
 	
 	@GetMapping("/trans")
 	public String trans() {
