@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -40,16 +41,15 @@ public class HomeController {
 		System.out.println(datas);
 		return datas;
 	}
-	@GetMapping("/news/{keyword}")
-	public String keywordNews(@PathVariable String keyword) {
-		
-		if(keyword == "") {
-			String query = "\"해외축구\"";
-			ByteBuffer buffer = StandardCharsets.UTF_8.encode(query);
+	@GetMapping("/newstab")
+	public String keywordNews(@RequestParam("start") int start,@RequestParam("keyword") String keyword) {
+		System.out.println(start + "  " + keyword);
+		if(keyword == "해외축구") {
+			ByteBuffer buffer = StandardCharsets.UTF_8.encode(keyword);
 			String encode = StandardCharsets.UTF_8.decode(buffer).toString();
 
 			URI uri = UriComponentsBuilder.fromUriString("https://openapi.naver.com").path("/v1/search/news.json")
-					.queryParam("query", encode).encode().build().toUri();
+					.queryParam("query", encode).queryParam("start", start).encode().build().toUri();
 
 			RestTemplate restTemplate = new RestTemplate();
 
@@ -66,7 +66,7 @@ public class HomeController {
 			String encode = StandardCharsets.UTF_8.decode(buffer).toString();
 
 			URI uri = UriComponentsBuilder.fromUriString("https://openapi.naver.com").path("/v1/search/news.json")
-					.queryParam("query", encode).encode().build().toUri();
+					.queryParam("query", encode).queryParam("start", start).encode().build().toUri();
 
 			RestTemplate restTemplate = new RestTemplate();
 
@@ -157,6 +157,22 @@ public class HomeController {
 			return result.getBody();
 		}
 	}
+	@GetMapping("/season")
+	public String season(@RequestParam String league, @RequestParam int season) throws ParseException {
+		System.out.println(league);
+		System.out.println(season);
+			URI uri = UriComponentsBuilder
+					.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/standings" + "?season=" + season).encode().build()
+					.toUri();
+			RestTemplate restTemplate = new RestTemplate();
+
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+					.build();
+			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+			
+			return result.getBody();
+		
+	}
 	
 	@GetMapping("/score/{league}")
 	public String score(@PathVariable String league) throws ParseException {
@@ -185,6 +201,22 @@ public class HomeController {
 			
 			return result.getBody();
 		}
+	}
+	
+	@GetMapping("/scorers")
+	public String scorers(@RequestParam String league, @RequestParam int season) throws ParseException {
+		System.out.println(league);
+		System.out.println(season);
+			URI uri = UriComponentsBuilder
+					.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/" + "scorers" + "?season=" + season).encode().build()
+					.toUri();
+			RestTemplate restTemplate = new RestTemplate();
+
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+					.build();
+			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+			
+			return result.getBody();
 	}
 
 }
