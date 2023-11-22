@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.example.project3.models.Board;
 import com.example.project3.models.User;
 import com.example.project3.payload.request.BoardSaveRequest;
+import com.example.project3.payload.response.ImageResponse;
 import com.example.project3.payload.response.MessageResponse;
 import com.example.project3.repository.BoardRepository;
 import com.example.project3.repository.CommentRepository;
@@ -44,8 +45,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@RestController
 @RequestMapping("/api")
+@RestController
 public class BoardController {
 	
 	@Autowired
@@ -59,6 +60,12 @@ public class BoardController {
 	
 	@GetMapping("/board")
 	public Page<Board> findAll(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		System.out.println(pageable);
+		Page<Board> page = boardRepository.findAll(pageable);
+		return page;
+	}
+	@GetMapping("api//board")
+	public Page<Board> home(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		System.out.println(pageable);
 		Page<Board> page = boardRepository.findAll(pageable);
 		return page;
@@ -152,20 +159,22 @@ public class BoardController {
 	
 	
 	@PostMapping("/imageupload")
-	public File imageSave(MultipartHttpServletRequest request) throws Exception {
+	public ImageResponse imageSave(MultipartHttpServletRequest request) throws Exception {
 		MultipartFile uploadFile = request.getFile("upload");
 		String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
 		UUID uuid = UUID.randomUUID();
-		
 		String fileName = uuid + "_" + uploadFile.getOriginalFilename();
 		
 		File saveFile = new File(projectPath, fileName);
-		
 		uploadFile.transferTo(saveFile);
+		System.out.println(saveFile.toString());
+		System.out.println(saveFile.toURL());
+		System.out.println(saveFile.toURI());
+		System.out.println(saveFile.toPath());
+		ImageResponse response = new ImageResponse("http://localhost:3000/img/" + fileName);
 		
-		System.out.println(saveFile);
-		
-		return saveFile;
+
+		return response;
 	}
 	
 	@DeleteMapping("/deleteboard/{postId}")

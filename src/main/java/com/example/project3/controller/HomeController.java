@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +22,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@RestController()
-@RequestMapping("/api")
-public class HomeController {
+import com.example.project3.models.Board;
+import com.example.project3.repository.BoardRepository;
 
+@RestController()
+@RequestMapping("/home")
+public class HomeController {
+	@Autowired
+	private BoardRepository boardRepository;
+	
+	@GetMapping("/board")
+	public Page<Board> findAll(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		System.out.println(pageable);
+		Page<Board> page = boardRepository.findAll(pageable);
+		return page;
+	}
+	
 	@GetMapping("/news")
 	public String news() {
 		String query = "EPL";
@@ -161,6 +178,19 @@ public class HomeController {
 	public String season(@RequestParam String league, @RequestParam int season) throws ParseException {
 		System.out.println(league);
 		System.out.println(season);
+			if(league.equals("CL")) {
+				System.out.println("실행됨");
+				URI uri = UriComponentsBuilder
+						.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/standings").encode().build()
+						.toUri();
+				RestTemplate restTemplate = new RestTemplate();
+
+				RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+						.build();
+				ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+				return result.getBody();
+			} else {
+				System.out.println("안됌");
 			URI uri = UriComponentsBuilder
 					.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/standings" + "?season=" + season).encode().build()
 					.toUri();
@@ -171,6 +201,7 @@ public class HomeController {
 			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
 			
 			return result.getBody();
+			}
 		
 	}
 	
@@ -207,6 +238,18 @@ public class HomeController {
 	public String scorers(@RequestParam String league, @RequestParam int season) throws ParseException {
 		System.out.println(league);
 		System.out.println(season);
+		if(league == "CL") {
+			URI uri = UriComponentsBuilder
+					.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/" + "scorers" ).encode().build()
+					.toUri();
+			RestTemplate restTemplate = new RestTemplate();
+
+			RequestEntity<Void> req = RequestEntity.get(uri).header("X-Auth-token", "c3094ac91e0345eaa953aaf134884aa8")
+					.build();
+			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+			System.out.println("실행됨");
+			return result.getBody();
+		} else {
 			URI uri = UriComponentsBuilder
 					.fromUriString("https://api.football-data.org/v4/competitions/" + league + "/" + "scorers" + "?season=" + season).encode().build()
 					.toUri();
@@ -217,6 +260,7 @@ public class HomeController {
 			ResponseEntity<String> result = restTemplate.exchange(req, String.class);
 			
 			return result.getBody();
+	}
 	}
 
 }
