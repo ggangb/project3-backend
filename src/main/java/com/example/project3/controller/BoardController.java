@@ -159,8 +159,11 @@ public class BoardController {
 	
 	
 	@PostMapping("/imageupload")
-	public ImageResponse imageSave(MultipartHttpServletRequest request) throws Exception {
+	public Map<String, Object> imageSave(MultipartHttpServletRequest request) throws Exception {
 		MultipartFile uploadFile = request.getFile("upload");
+		System.out.println(request.toString());
+		Map<String,Object> responseData = new HashMap<>();
+		System.out.println(request);
 		String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
 		UUID uuid = UUID.randomUUID();
 		String fileName = uuid + "_" + uploadFile.getOriginalFilename();
@@ -171,10 +174,13 @@ public class BoardController {
 		System.out.println(saveFile.toURL());
 		System.out.println(saveFile.toURI());
 		System.out.println(saveFile.toPath());
-		ImageResponse response = new ImageResponse("http://localhost:3000/img/" + fileName);
+		String ImgUrl = "http://localhost:3000/img/" + fileName;
+//		ImageResponse response = new ImageResponse("http://localhost:3000/img/" + fileName);
+		responseData.put("uploaded", true);
+		responseData.put("url", ImgUrl);
 		
 
-		return response;
+		return responseData;
 	}
 	
 	@DeleteMapping("/deleteboard/{postId}")
