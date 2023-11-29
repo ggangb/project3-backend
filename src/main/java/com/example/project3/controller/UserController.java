@@ -34,9 +34,9 @@ import com.example.project3.repository.RoleRepository;
 import com.example.project3.repository.UserRepository;
 import com.example.project3.security.jwt.JwtUtils;
 import com.example.project3.security.jwt.exception.TokenRefreshException;
-import com.example.project3.security.service.RefreshTokenService;
-import com.example.project3.security.service.SequenceGeneratorService;
-import com.example.project3.security.service.UserDetailsImpl;
+import com.example.project3.service.RefreshTokenService;
+import com.example.project3.service.SequenceGeneratorService;
+import com.example.project3.service.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 

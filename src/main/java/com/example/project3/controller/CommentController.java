@@ -24,94 +24,40 @@ import com.example.project3.models.Comment;
 import com.example.project3.payload.response.MessageResponse;
 import com.example.project3.repository.BoardRepository;
 import com.example.project3.repository.CommentRepository;
-import com.example.project3.security.service.SequenceGeneratorService;
+import com.example.project3.service.CommentService;
+import com.example.project3.service.SequenceGeneratorService;
 
 @RestController
 @RequestMapping("/api")
 public class CommentController {
 	
 	@Autowired
-	private CommentRepository commentRepository;
+	CommentService commentService;
 	
-	@Autowired
-	private BoardRepository boardRepository;
-	
-	@Autowired
-	SequenceGeneratorService sequenceGeneratorService;
+
 	
 	@PostMapping("/comment")
 	public ResponseEntity<?> commentSave(@RequestBody Comment comment) {
 		
 
-		comment.setRef(sequenceGeneratorService.generateSequence(Comment.SEQUENCE_NAME));
-		comment.setChildnum( 0);
-		comment.setLevel(0);
-		comment.setReforder(0);
-		
-		
-		
-		commentRepository.save(comment);
-		
+		if(commentService.commentSave(comment)) {
+			return ResponseEntity.ok(new MessageResponse("댓글 등록완료"));
+		} else {
+			return ResponseEntity.ok(new MessageResponse("댓글 등록실패"));
+		}
 
-		
-		return ResponseEntity.ok(new MessageResponse("댓글 등록완료"));
 	}
 	
 	@GetMapping("/comment/{postId}")
 	public Page<Comment> commentList(@PathVariable String postId, @PageableDefault(sort = {"ref"},direction = Sort.Direction.DESC ) Pageable pageable) {
-		System.out.println(postId);
-		System.out.println(pageable);
-		Page<Comment> commentAll = commentRepository.findAllByPostId(postId, pageable);
 		
-		return commentAll;
+		return commentService.getCommentList(postId, pageable);
 	}
 	
 	@PostMapping("/recomment")
 	public ResponseEntity<?> reCommentSave(@RequestBody Comment comment) {
 		
-		System.out.println("입력 대댓글" + comment);
-		Optional<Comment> c = commentRepository.findById(comment.getParentnum());
-		Comment c1 = c.get();
-		System.out.println("부모댓글" + c1);
-//		
-//			List<Comment> cm = commentRepository.findByRefOrderByReforder(c1.getRef());
-//			Comment com = cm.get(0);
-//			System.out.println(com);
-//			comment.setReforder(com.getReforder());
-//			com.setReforder(com.getReforder()+1);
-//			c1.setChildnum(c1.getChildnum()+1);
-//			comment.setRef(c1.getRef());
-//			comment.setLevel(c1.getLevel()+1);
-//			System.out.println("댓글등록전 최종" + comment);
-//			commentRepository.save(c1);
-//			commentRepository.save(com);
-//			commentRepository.save(comment);
-
-		
-	
-		if(c1.getChildnum() == 0) {
-			comment.setReforder(1);
-			c1.setChildnum((c1.getChildnum()+1));
-			comment.setRef(c1.getRef());
-			comment.setLevel((c1.getLevel()+1));
-			commentRepository.save(c1);
-			commentRepository.save(comment);
-		} else {
-			List<Comment> cm = commentRepository.findAll(Sort.by(Direction.DESC, "reforder"));
-			Comment com1 = cm.get(0);
-			System.out.println(com1);
-			c1.setChildnum(c1.getChildnum()+1);
-			comment.setRef(c1.getRef());
-			comment.setReforder(com1.getReforder());
-			com1.setReforder(com1.getReforder()+1);
-			comment.setLevel((c1.getLevel()+1));
-			
-			
-			commentRepository.save(com1);
-			commentRepository.save(c1);
-			commentRepository.save(comment);
-		}
-			
+		commentService.reCommentSave(comment);
 		
 		return ResponseEntity.ok(new MessageResponse("댓글 등록완료"));
 		
@@ -119,18 +65,13 @@ public class CommentController {
 	
 	@PutMapping("/updaterecomment")
 	public ResponseEntity<?> recommentUpdate(@RequestBody Comment comment) {
-		commentRepository.save(comment);
+		commentService.recommentUpdate(comment);
 		return ResponseEntity.ok(new MessageResponse("댓글 수정완료"));
 	}
 	
 	@PutMapping("/deletecomment/{contentId}")
 	public ResponseEntity<?> commentDelete(@PathVariable String contentId) {
-		Optional<Comment> c = commentRepository.findById(contentId);
-		Comment c1 = c.get();
-		c1.setText("[삭제된 댓글입니다.]");
-		c1.setDeleteYn("Y");
-		commentRepository.save(c1);
-		
+		commentService.recommentDelete(contentId);
 		return ResponseEntity.ok(new MessageResponse("댓글 삭제완료"));
 	}
 	
