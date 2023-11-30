@@ -16,7 +16,7 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 	
 		List<Comment>  findAllOrderByReforder(Sort sort);
 		
-		List<Comment> findByRefOrderByReforder(Long ref);
+		List<Comment> findByRefOrderByReforderDesc(Long ref);
 		
 		Page<Comment> findAllByPostId(String postId, Pageable pageable);
 		

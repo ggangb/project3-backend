@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +50,11 @@ public class CommentController {
 	}
 	
 	@GetMapping("/comment/{postId}")
-	public Page<Comment> commentList(@PathVariable String postId, @PageableDefault(sort = {"ref"},direction = Sort.Direction.DESC ) Pageable pageable) {
+	public Page<Comment> commentList(@PathVariable String postId, 
+			@SortDefault.SortDefaults({
+				@SortDefault(sort = "ref", direction = Sort.Direction.DESC),
+				@SortDefault(sort = "reforder", direction = Sort.Direction.ASC)
+				}) Pageable pageable) {
 		
 		return commentService.getCommentList(postId, pageable);
 	}

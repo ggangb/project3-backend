@@ -52,8 +52,37 @@ public class CommentService {
 		
 		System.out.println("입력 대댓글" + comment);
 		Optional<Comment> c = commentRepository.findById(comment.getParentnum());
-		Comment c1 = c.get();
-		System.out.println("부모댓글" + c1);
+		Comment parent = c.get();
+		System.out.println("부모댓글" + parent);
+		
+		Comment child = comment;
+		
+			
+
+			List<Comment> cm = commentRepository.findByRefOrderByReforderDesc(parent.getRef());
+			Comment c1 = cm.get(0);
+			if(parent.getReforder() == 0) {
+				child.setRef(parent.getRef());
+				child.setReforder(c1.getReforder()+1);
+				child.setLevel(parent.getLevel()+1);
+				parent.setChildnum(parent.getChildnum()+1);
+				commentRepository.save(parent);
+				commentRepository.save(child);
+				commentRepository.save(c1);
+			} else {
+				child.setRef(parent.getRef());
+				child.setReforder(parent.getReforder()+1);
+				c1.setReforder(c1.getReforder()+1);
+				child.setLevel(parent.getLevel()+1);
+				parent.setChildnum(parent.getChildnum()+1);
+				commentRepository.save(parent);
+				commentRepository.save(child);
+				commentRepository.save(c1);
+			}
+		
+		
+		
+		
 //		
 //			List<Comment> cm = commentRepository.findByRefOrderByReforder(c1.getRef());
 //			Comment com = cm.get(0);
@@ -70,28 +99,28 @@ public class CommentService {
 
 		
 	
-		if(c1.getChildnum() == 0) {
-			comment.setReforder(1);
-			c1.setChildnum((c1.getChildnum()+1));
-			comment.setRef(c1.getRef());
-			comment.setLevel((c1.getLevel()+1));
-			commentRepository.save(c1);
-			commentRepository.save(comment);
-		} else {
-			List<Comment> cm = commentRepository.findAll(Sort.by(Direction.DESC, "reforder"));
-			Comment com1 = cm.get(0);
-			System.out.println(com1);
-			c1.setChildnum(c1.getChildnum()+1);
-			comment.setRef(c1.getRef());
-			comment.setReforder(com1.getReforder());
-			com1.setReforder(com1.getReforder()+1);
-			comment.setLevel((c1.getLevel()+1));
-			
-			
-			commentRepository.save(com1);
-			commentRepository.save(c1);
-			commentRepository.save(comment);
-		}
+//		if(c1.getChildnum() == 0) {
+//			comment.setReforder(1);
+//			c1.setChildnum((c1.getChildnum()+1));
+//			comment.setRef(c1.getRef());
+//			comment.setLevel((c1.getLevel()+1));
+//			commentRepository.save(c1);
+//			commentRepository.save(comment);
+//		} else {
+//			List<Comment> cm = commentRepository.findAll(Sort.by(Direction.DESC, "reforder"));
+//			Comment com1 = cm.get(0);
+//			System.out.println(com1);
+//			c1.setChildnum(c1.getChildnum()+1);
+//			comment.setRef(c1.getRef());
+//			comment.setReforder(com1.getReforder());
+//			com1.setReforder(com1.getReforder()+1);
+//			comment.setLevel((c1.getLevel()+1));
+//			commentRepository.save(com1);
+//			commentRepository.save(c1);
+//			commentRepository.save(comment);
+//		}
+		
+		
 	}
 	
 	public void recommentUpdate(Comment comment) {
