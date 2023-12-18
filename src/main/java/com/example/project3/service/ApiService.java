@@ -29,9 +29,7 @@ public class ApiService {
 		RequestEntity<Void> req = RequestEntity.get(uri).header("X-Naver-Client-Id", "8WncpxE9lBzklQhOajm2")
 				.header("X-Naver-Client-Secret", "MuNmGX8Dwc").build();
 		ResponseEntity<String> result = restTemplate.exchange(req, String.class);
-		String datas = result.getBody().replaceAll("&quot;", "")
-										.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "")
-										.replaceAll("&apos;", "'");
+		String datas = result.getBody();
 		System.out.println(datas);
 		return datas;
 	}
@@ -54,6 +52,8 @@ public class ApiService {
 	public String getTransNews() {
 		String query = "축구이적설";
 		int start = 1;
+		
+		
 		return sendNewsRequest(query,start);
 	}
 	

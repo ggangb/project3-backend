@@ -1,6 +1,7 @@
 package com.example.project3.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,8 +12,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import com.example.project3.models.Board;
+import com.example.project3.models.Categories;
 import com.example.project3.payload.request.BoardSaveRequest;
 import com.example.project3.repository.BoardRepository;
+import com.example.project3.repository.CategoriesRepository;
 import com.example.project3.repository.CommentRepository;
 
 import jakarta.servlet.http.Cookie;
@@ -26,6 +29,9 @@ public class Boardservice {
 	private BoardRepository boardRepository;
 	
 	@Autowired
+	private CategoriesRepository categoriesRespository;
+	
+	@Autowired
 	private CommentRepository commentRepository;
 	
 	@Autowired
@@ -36,20 +42,22 @@ public class Boardservice {
 		return page;
 	}
 	
-	public int boardSave(BoardSaveRequest boardSave) {
+	public int boardSave(Board boardSave) {
 		
-		Board board = new Board(boardSave.getTitle(),
-				boardSave.getContent(),
-				boardSave.getUsername(),
-				boardSave.getDate());
-		board.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
-		boardRepository.save(board);
-		if(boardRepository.save(board) != null) {
+		boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+		Categories request = boardSave.getCategories();
+		boardRepository.save(boardSave);
+		if(boardRepository.save(boardSave) != null) {
 			return 1;
 		} else {
 			return 0;
 		}
 		
+	}
+	
+	public List<Categories> getTab() {
+		List<Categories> result = categoriesRespository.findAll();
+		return result;
 	}
 	
 	public Board getContent(Long contentId,HttpServletRequest request,

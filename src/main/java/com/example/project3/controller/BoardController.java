@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.example.project3.models.Board;
+import com.example.project3.models.Categories;
 import com.example.project3.models.User;
 import com.example.project3.payload.request.BoardSaveRequest;
 import com.example.project3.payload.response.ImageResponse;
@@ -78,8 +79,9 @@ public class BoardController {
 	}
 	
 	@PostMapping("/board")
-	public ResponseEntity<?> boardSave(@RequestBody BoardSaveRequest boardSave) {
+	public ResponseEntity<?> boardSave(@RequestBody Board boardSave) {
 		
+	
 		int result = boardService.boardSave(boardSave);
 		
 		if(result == 1) {
@@ -98,6 +100,12 @@ public class BoardController {
 		
 		return ResponseEntity.ok().body(board);
 		
+	}
+	
+	@GetMapping("/gettab")
+	public List<Categories> getTab() {
+		List<Categories> tab = boardService.getTab();
+		return tab;
 	}
 	
 	@GetMapping("/recommend/{contentId}")

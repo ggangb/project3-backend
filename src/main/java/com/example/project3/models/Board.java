@@ -1,7 +1,5 @@
 package com.example.project3.models;
 
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -16,6 +14,9 @@ public class Board {
 	private String id;
 	
 	private Long idx;
+	
+	@DBRef
+	private Categories categories;
 	
 	private Long prev;
 	
@@ -36,11 +37,12 @@ public class Board {
 	
 	
 
-	public Board(String title, String content, String username, String date) {
+	public Board(String title, String content, String username, String date, Categories categories) {
 		this.title = title;
 		this.content = content;
 		this.username = username;
 		this.date = date;
+		this.categories = categories;
 	}
 
 
@@ -133,6 +135,18 @@ public class Board {
 	}
 
 
+	public Categories getCategories() {
+		return categories;
+	}
+
+
+	public void setCategories(Categories categories) {
+		this.categories = categories;
+	}
+
+	
+
+	
 	
 	
 	
