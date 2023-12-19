@@ -18,6 +18,9 @@ public class Board {
 	@DBRef
 	private Categories categories;
 	
+	@DBRef
+	private SubCategories subCategories;
+	
 	private Long prev;
 	
 	private Long next;
@@ -143,6 +146,27 @@ public class Board {
 	public void setCategories(Categories categories) {
 		this.categories = categories;
 	}
+
+
+	public SubCategories getSubCategories() {
+		return subCategories;
+	}
+
+
+	public void setSubCategories(SubCategories subCategories) {
+		this.subCategories = subCategories;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Board [id=" + id + ", idx=" + idx + ", categories=" + categories + ", subCategories=" + subCategories
+				+ ", prev=" + prev + ", next=" + next + ", title=" + title + ", content=" + content + ", username="
+				+ username + ", date=" + date + ", view=" + view + ", recommend=" + recommend + "]";
+	}
+
+
+	
 
 	
 

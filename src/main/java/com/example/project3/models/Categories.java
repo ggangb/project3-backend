@@ -14,9 +14,12 @@ public class Categories {
 	
 	private String name;
 	
-	@DBRef
-	private List<CategoriesSub> subCategories;
+	private String parentId;
 	
+	@DBRef
+	private List<SubCategories> subCategories;
+	
+
 	private int count;
 	
 
@@ -44,13 +47,45 @@ public class Categories {
 		this.count = count;
 	}
 
-	public List<CategoriesSub> getSubCategories() {
+	public List<SubCategories> getSubCategories() {
 		return subCategories;
 	}
-	
-	public void setSubCategories(List<CategoriesSub> subCategories) {
+
+	public void setSubCategories(List<SubCategories> subCategories) {
 		this.subCategories = subCategories;
 	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	@Override
+	public String toString() {
+		return "Categories [id=" + id + ", name=" + name + ", parentId=" + parentId + ", subCategories=" + subCategories
+				+ ", count=" + count + "]";
+	}
+
+	
+	
+
+
+
+
+	
+
+	
+
+	
+
+
+	
+	
+
+	
 
 	
 

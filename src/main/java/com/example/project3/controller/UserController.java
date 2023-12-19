@@ -158,7 +158,6 @@ public class UserController {
 				}
 			});
 		}
-
 		user.setRoles(roles);
 		userRepository.save(user);
 

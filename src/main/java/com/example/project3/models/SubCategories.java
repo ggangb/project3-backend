@@ -4,13 +4,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "subcategories")
-public class CategoriesSub {
+public class SubCategories {
 	@Id
 	private String id;
 	
 	private String name;
 	
 	private int count;
+	
 	
 
 	public String getId() {
@@ -37,5 +38,15 @@ public class CategoriesSub {
 		this.count = count;
 	}
 
+	@Override
+	public String toString() {
+		return "SubCategories [id=" + id + ", name=" + name + ", count=" + count + "]";
+	}
+
+
+	
+	
+	
+	
 	
 }

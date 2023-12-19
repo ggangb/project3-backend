@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.project3.models.Board;
 import com.example.project3.models.Categories;
-import com.example.project3.payload.request.BoardSaveRequest;
+import com.example.project3.models.SubCategories;
 import com.example.project3.repository.BoardRepository;
 import com.example.project3.repository.CategoriesRepository;
+import com.example.project3.repository.subCategoriesRepository;
 import com.example.project3.repository.CommentRepository;
 
 import jakarta.servlet.http.Cookie;
@@ -32,6 +33,10 @@ public class Boardservice {
 	private CategoriesRepository categoriesRespository;
 	
 	@Autowired
+	private subCategoriesRepository subCategoriesRepository;
+	
+	
+	@Autowired
 	private CommentRepository commentRepository;
 	
 	@Autowired
@@ -42,15 +47,47 @@ public class Boardservice {
 		return page;
 	}
 	
+	public Page<Board> findCategories(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable, String categories) {
+		Page<Board> page = boardRepository.findByCategories(pageable, categories);
+		Page<Board> page1 = boardRepository.findBySubCategories(pageable, categories);
+		if(page.isEmpty() && page1.isEmpty()) {
+			return null;
+		} else if(!page.isEmpty()) {
+			return page;
+		} else {
+			return page1;
+		}
+	}
+	
 	public int boardSave(Board boardSave) {
 		
-		boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
 		Categories request = boardSave.getCategories();
-		boardRepository.save(boardSave);
-		if(boardRepository.save(boardSave) != null) {
-			return 1;
+		if(request.getParentId() != null) {
+			Optional<Categories> result = categoriesRespository.findById(request.getParentId());
+			result.get().setCount(result.get().getCount()+1);
+			categoriesRespository.save(result.get());
+			Optional<SubCategories> resultSub = subCategoriesRepository.findById(request.getId());
+			resultSub.get().setCount(resultSub.get().getCount()+1);
+			subCategoriesRepository.save(resultSub.get());
+			boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+			boardSave.setSubCategories(resultSub.get());
+			boardRepository.save(boardSave);
+			if(boardRepository.save(boardSave) != null) {
+				return 1;
+			} else {
+				return 0;
+			}
 		} else {
-			return 0;
+			Optional<Categories> result = categoriesRespository.findById(request.getId());
+			result.get().setCount(result.get().getCount()+1);
+			categoriesRespository.save(result.get());
+			boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+			boardRepository.save(boardSave);
+			if(boardRepository.save(boardSave) != null) {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
 		
 	}
@@ -118,7 +155,7 @@ public class Boardservice {
 	}
 	
 	public List<Board> recommendRank() {
-		return boardRepository.findAllByOrderByRecommend(Sort.by(Direction.DESC, "recommend"));
+		return boardRepository.findTop10ByOrderByRecommendDesc();
 		
 	}
 	

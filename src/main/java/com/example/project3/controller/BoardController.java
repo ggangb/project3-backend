@@ -78,6 +78,18 @@ public class BoardController {
 		return page;
 	}
 	
+	@GetMapping("/changetab/{categories}")
+	public Page<Board> finByTab(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@PathVariable String categories) {
+		System.out.println(pageable+ "," + categories);
+		Page<Board> page = boardService.findCategories(pageable, categories);
+		
+		if (pageable == null) {
+	        throw new IllegalArgumentException("결과가 없습니다."); 
+	    }
+		return page;
+		
+	}
 	@PostMapping("/board")
 	public ResponseEntity<?> boardSave(@RequestBody Board boardSave) {
 		

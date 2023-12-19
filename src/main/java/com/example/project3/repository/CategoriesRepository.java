@@ -11,4 +11,5 @@ public interface CategoriesRepository extends MongoRepository<Categories, String
 	List<Categories> findAll();
 	
 	
+	
 }
