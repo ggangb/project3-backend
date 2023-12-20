@@ -50,6 +50,8 @@ public class Boardservice {
 	public Page<Board> findCategories(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable, String categories) {
 		Page<Board> page = boardRepository.findByCategories(pageable, categories);
 		Page<Board> page1 = boardRepository.findBySubCategories(pageable, categories);
+		System.out.println(page.get());
+		System.out.println(page1.get());
 		if(page.isEmpty() && page1.isEmpty()) {
 			return null;
 		} else if(!page.isEmpty()) {
@@ -63,6 +65,7 @@ public class Boardservice {
 		
 		Categories request = boardSave.getCategories();
 		if(request.getParentId() != null) {
+			
 			Optional<Categories> result = categoriesRespository.findById(request.getParentId());
 			result.get().setCount(result.get().getCount()+1);
 			categoriesRespository.save(result.get());
@@ -70,6 +73,7 @@ public class Boardservice {
 			resultSub.get().setCount(resultSub.get().getCount()+1);
 			subCategoriesRepository.save(resultSub.get());
 			boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+			boardSave.setCategories(result.get());
 			boardSave.setSubCategories(resultSub.get());
 			boardRepository.save(boardSave);
 			if(boardRepository.save(boardSave) != null) {
@@ -150,7 +154,9 @@ public class Boardservice {
 	
 	public void recommendContent(Long contentId) {
 		Board board = boardRepository.findByIdx(contentId);
+		System.out.println("업데이트 전 : " + board);
 		board.setRecommend(board.getRecommend()+1);
+		System.out.println(board);
 		boardRepository.save(board);
 	}
 	

@@ -1,6 +1,8 @@
 package com.example.project3.models;
 
 
+import java.util.Optional;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -164,6 +166,9 @@ public class Board {
 				+ ", prev=" + prev + ", next=" + next + ", title=" + title + ", content=" + content + ", username="
 				+ username + ", date=" + date + ", view=" + view + ", recommend=" + recommend + "]";
 	}
+
+
+
 
 
 	
