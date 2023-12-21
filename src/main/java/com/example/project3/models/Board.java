@@ -1,6 +1,7 @@
 package com.example.project3.models;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.annotation.Id;
@@ -22,6 +23,8 @@ public class Board {
 	
 	@DBRef
 	private SubCategories subCategories;
+	
+	private List<String> recommendUserIds;
 	
 	private Long prev;
 	
@@ -159,14 +162,29 @@ public class Board {
 		this.subCategories = subCategories;
 	}
 
+	
+	
+
+	public List<String> getRecommendUserIds() {
+		return recommendUserIds;
+	}
+
+
+	public void setRecommendUserIds(List<String> recommendUserIds) {
+		this.recommendUserIds = recommendUserIds;
+	}
+
 
 	@Override
 	public String toString() {
 		return "Board [id=" + id + ", idx=" + idx + ", categories=" + categories + ", subCategories=" + subCategories
-				+ ", prev=" + prev + ", next=" + next + ", title=" + title + ", content=" + content + ", username="
-				+ username + ", date=" + date + ", view=" + view + ", recommend=" + recommend + "]";
+				+ ", recommendUserIds=" + recommendUserIds + ", prev=" + prev + ", next=" + next + ", title=" + title
+				+ ", content=" + content + ", username=" + username + ", date=" + date + ", view=" + view
+				+ ", recommend=" + recommend + "]";
 	}
 
+
+	
 
 
 
