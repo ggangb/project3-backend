@@ -33,4 +33,6 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 		//게시글 삭제시 댓글삭제
 		void deleteByPostId(String postId);
 
+		List<Comment> existsByText(String input);
+
 }

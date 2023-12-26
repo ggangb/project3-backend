@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.example.project3.models.Board;
 import com.example.project3.models.Categories;
+import com.example.project3.models.Recommend;
 import com.example.project3.models.User;
 import com.example.project3.payload.request.BoardSaveRequest;
 import com.example.project3.payload.response.ImageResponse;
@@ -114,15 +115,23 @@ public class BoardController {
 		
 	}
 	
+	@GetMapping("/searchcontent")
+	public Page<Board> searchData(@PageableDefault(page =0, size = 5, sort = { "date" }, direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam Map<String, Object> searchData) {
+        
+        return boardService.searchContent(pageable,searchData);
+    }
+	
 	@GetMapping("/gettab")
 	public List<Categories> getTab() {
 		List<Categories> tab = boardService.getTab();
 		return tab;
 	}
 	
-	@GetMapping("/recommend/{contentId}")
-	public void recommendContent(@PathVariable Long contentId) {
-		boardService.recommendContent(contentId);
+	@PostMapping("/recommend")
+	public ResponseEntity<?> recommendContent(@RequestBody Recommend recommend) {
+		System.out.println(recommend);
+		return boardService.recommendContent(recommend);
 	}
 	
 	@GetMapping("/getrank")

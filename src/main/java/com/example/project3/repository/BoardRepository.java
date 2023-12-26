@@ -28,4 +28,14 @@ public interface BoardRepository extends MongoRepository<Board, String> {
 	
 	Page<Board> findBySubCategories(Pageable pageable, String categoriesId);
 	
+	Page<Board> findByIdIn(Pageable pageable, List<String> boardList);
+	
+	Page<Board> findByTitleContainingOrContentContaining(Pageable pageable, String title, String content);
+	
+	Page<Board> findByTitle(Pageable pageable, String input);
+	
+	Page<Board> findByContent(Pageable pageable, String input);
+	
+	Page<Board> findByUsername(Pageable pageable, String input);
+	
 }

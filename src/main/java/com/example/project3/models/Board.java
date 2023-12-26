@@ -24,8 +24,6 @@ public class Board {
 	@DBRef
 	private SubCategories subCategories;
 	
-	private List<String> recommendUserIds;
-	
 	private Long prev;
 	
 	private Long next;
@@ -165,20 +163,13 @@ public class Board {
 	
 	
 
-	public List<String> getRecommendUserIds() {
-		return recommendUserIds;
-	}
 
-
-	public void setRecommendUserIds(List<String> recommendUserIds) {
-		this.recommendUserIds = recommendUserIds;
-	}
 
 
 	@Override
 	public String toString() {
 		return "Board [id=" + id + ", idx=" + idx + ", categories=" + categories + ", subCategories=" + subCategories
-				+ ", recommendUserIds=" + recommendUserIds + ", prev=" + prev + ", next=" + next + ", title=" + title
+				 + ", prev=" + prev + ", next=" + next + ", title=" + title
 				+ ", content=" + content + ", username=" + username + ", date=" + date + ", view=" + view
 				+ ", recommend=" + recommend + "]";
 	}
