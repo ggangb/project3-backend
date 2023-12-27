@@ -97,10 +97,11 @@ public class BoardController {
 	
 		int result = boardService.boardSave(boardSave);
 		
-		if(result == 1) {
+		if(result != 0) {
 			return ResponseEntity.ok(new MessageResponse("글 등록완료"));
 		} else {
-			return null;
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("잘못된 요청입니다.");
 		}
 		
 	}

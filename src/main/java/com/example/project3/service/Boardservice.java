@@ -71,48 +71,83 @@ public class Boardservice {
 		}
 	}
 
-	public int boardSave(Board boardSave) {
 
-		Categories request = boardSave.getCategories();
-		if (request.getParentId() != null) {
+public int boardSave(Board boardSave) {
 
-			Optional<Categories> result = categoriesRespository.findById(request.getParentId());
-			result.get().setCount(result.get().getCount() + 1);
-			categoriesRespository.save(result.get());
-			Optional<SubCategories> resultSub = subCategoriesRepository.findById(request.getId());
-			resultSub.get().setCount(resultSub.get().getCount() + 1);
-			subCategoriesRepository.save(resultSub.get());
-			boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
-			boardSave.setCategories(result.get());
-			boardSave.setSubCategories(resultSub.get());
-			Recommend recommend = new Recommend();
-			recommend.setBoardId(boardSave.getIdx());
-			List<String> recommendUserIds = new ArrayList<>();
-			recommend.setRecommendUserIds(recommendUserIds);
-			recommendRepository.save(recommend);
-			boardRepository.save(boardSave);
-			if (boardRepository.save(boardSave) != null) {
-				return 1;
-			} else {
-				return 0;
-			}
-		} else {
-			Optional<Categories> result = categoriesRespository.findById(request.getId());
-			result.get().setCount(result.get().getCount() + 1);
-			categoriesRespository.save(result.get());
-			boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
-			boardRepository.save(boardSave);
-			Recommend recommend = new Recommend();
-			recommend.setBoardId(boardSave.getIdx());
-			List<String> recommendUserIds = new ArrayList<>();
-			recommend.setRecommendUserIds(recommendUserIds);
-			recommendRepository.save(recommend);
-			if (boardRepository.save(boardSave) != null) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
+	// boardSave 객체에서 카테고리 정보를 가져옵니다.
+    Categories request = boardSave.getCategories();
+
+    if (request.getParentId() != null) {
+        // parentId가 null이 아닌 경우에는 부모 카테고리에 대한 처리를 수행합니다.
+
+        // parentId를 통해 부모 카테고리를 조회합니다.
+        Optional<Categories> result = categoriesRespository.findById(request.getParentId());
+
+        // 조회한 부모 카테고리의 count 값을 1 증가시킵니다.
+        result.get().setCount(result.get().getCount() + 1);
+        // 변경된 부모 카테고리를 저장합니다.
+        categoriesRespository.save(result.get());
+
+        // 요청된 카테고리의 id를 통해 서브 카테고리를 조회합니다.
+        Optional<SubCategories> resultSub = subCategoriesRepository.findById(request.getId());
+        // 조회한 서브 카테고리의 count 값을 1 증가시킵니다.
+        resultSub.get().setCount(resultSub.get().getCount() + 1);
+        // 변경된 서브 카테고리를 저장합니다.
+        subCategoriesRepository.save(resultSub.get());
+
+        // boardSave 객체에 고유한 인덱스를 생성하여 할당합니다.
+        boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+        // boardSave 객체에 부모 카테고리와 서브 카테고리 정보를 설정합니다.
+        boardSave.setCategories(result.get());
+        boardSave.setSubCategories(resultSub.get());
+
+        // 추천 정보를 생성하고 저장합니다.
+        Recommend recommend = new Recommend();
+        recommend.setBoardId(boardSave.getIdx());
+        List<String> recommendUserIds = new ArrayList<>();
+        recommend.setRecommendUserIds(recommendUserIds);
+        recommendRepository.save(recommend);
+
+        // boardSave 객체를 저장합니다.
+        boardRepository.save(boardSave);
+
+        // boardSave 객체의 저장 결과를 확인하여 성공적으로 저장되었으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.
+        if (boardRepository.save(boardSave) != null) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        // parentId가 null인 경우에는 부모 카테고리에 대한 처리를 수행하지 않습니다.
+
+        // 요청된 카테고리의 id를 통해 카테고리를 조회합니다.
+        Optional<Categories> result = categoriesRespository.findById(request.getId());
+
+        // 조회한 카테고리의 count 값을 1 증가시킵니다.
+        result.get().setCount(result.get().getCount() + 1);
+        // 변경된 카테고리를 저장합니다.
+        categoriesRespository.save(result.get());
+
+        // boardSave 객체에 고유한 인덱스를 생성하여 할당합니다.
+        boardSave.setIdx(sequenceGeneratorService.generateSequence(Board.SEQUENCE_NAME));
+
+        // 추천 정보를 생성하고 저장합니다.
+        Recommend recommend = new Recommend();
+        recommend.setBoardId(boardSave.getIdx());
+        List<String> recommendUserIds = new ArrayList<>();
+        recommend.setRecommendUserIds(recommendUserIds);
+        recommendRepository.save(recommend);
+
+        // boardSave 객체를 저장합니다.
+        boardRepository.save(boardSave);
+
+        // boardSave 객체의 저장 결과를 확인하여 성공적으로 저장되었으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.
+        if (boardRepository.save(boardSave) != null) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
 	}
 
