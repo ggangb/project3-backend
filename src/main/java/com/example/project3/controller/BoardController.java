@@ -116,6 +116,21 @@ public class BoardController {
 		
 	}
 	
+	@GetMapping("/mypost") 
+	public Page<Board> getMyPost(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam Map<String, Object> postData) {
+		String username = (String) postData.get("username");
+		String type = (String) postData.get("type");
+		System.out.println(username);
+		System.out.println(type);
+
+			Page<Board> page = boardService.findMyPost(pageable,postData);
+
+		
+		return page;
+	}
+	
+	
 	@GetMapping("/searchcontent")
 	public Page<Board> searchData(@PageableDefault(page =0, size = 5, sort = { "date" }, direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam Map<String, Object> searchData) {

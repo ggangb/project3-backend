@@ -14,6 +14,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.project3.models.Board;
 import com.example.project3.models.Categories;
@@ -307,5 +309,38 @@ public int boardSave(Board boardSave) {
 		return null;
         
 	}
+	
+	public Page<Board> findMyPost(@PageableDefault(sort = {"date"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@RequestParam Map<String, Object> postData) {
+		
+		String username = (String) postData.get("username");
+		String type = (String) postData.get("type");
+		 switch (type) {
+	        case "post":
+	        	Page<Board> post = boardRepository.findByUsername(pageable, username);
+	        	return post;
+	        case "comment":
+	        	List<Comment> result = commentRepository.findByWriter(username);
+	        	List<String> boardList = new ArrayList<>();
+	        	for (int i=0; i < result.size(); i++) {
+	        		boardList.add(result.get(i).getPostId());
+	        	}
+	        	Page<Board> comment = boardRepository.findByIdIn(pageable,boardList);
+	        	System.out.println(comment);
+	        	return comment;
+	      
+	        case "recommend":
+	        	List<Recommend> result1 = recommendRepository.findByRecommendUserIds(username);
+	        	List<Long> boardList1 = new ArrayList<>();
+	        	for (int i=0; i < result1.size(); i++) {
+	        		boardList1.add(result1.get(i).getBoardId());
+	        	}
+	        	Page<Board> recommend = boardRepository.findByIdxIn(pageable,boardList1);
+	        	return recommend;
+	        }
+		return null;
+	}
+	
+
 
 }

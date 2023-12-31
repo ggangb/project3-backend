@@ -42,8 +42,8 @@ import com.example.project3.service.EmailService;
 import com.example.project3.service.RefreshTokenService;
 import com.example.project3.service.SequenceGeneratorService;
 import com.example.project3.service.UserDetailsImpl;
+import com.example.project3.service.UserDetailsServiceImpl;
 import com.example.project3.service.UserService;
-
 
 import jakarta.validation.Valid;
 
@@ -72,6 +72,9 @@ public class UserController {
 	RefreshTokenService refreshTokenService;
 
 	@Autowired
+	UserDetailsServiceImpl userDetailServiceImpl;
+
+	@Autowired
 	JwtUtils jwtUtils;
 
 	@Autowired
@@ -96,7 +99,7 @@ public class UserController {
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
 		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-				userDetails.getUsername(), userDetails.getEmail(), roles));
+				userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhone(), roles));
 	}
 
 	@PostMapping("/refreshtoken")
@@ -179,11 +182,9 @@ public class UserController {
 	public boolean findAccount(@PathVariable String email) {
 		System.out.println(email);
 		User findUser = userService.checkAccount(email);
-
+		String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
 		System.out.println(findUser.getUsername());
 		System.out.println(findUser.getPassword());
-		String jwt = jwtUtils.generateJwtToken(findUser);
-
 		emailService.sendEmail(jwt, email);
 
 		return true;
@@ -193,29 +194,55 @@ public class UserController {
 	@GetMapping("/verifytoken")
 	public boolean verifyToken(@RequestParam("token") String token) {
 		System.out.println(token);
-        boolean isValid = jwtUtils.validateJwtToken(token);
-        System.out.println(isValid);
-        if (isValid) {
-            // 토큰이 유효한 경우
-        	return true;
-        } else {
-            // 토큰이 유효하지 않은 경우
-            return false;
-        }
-    }
-	
-	@PostMapping("/changepw") 
-		public boolean changePw(@RequestBody HashMap<String, Object> changeData) {
+		boolean isValid = jwtUtils.validateJwtToken(token);
+		System.out.println(isValid);
+		if (isValid) {
+			// 토큰이 유효한 경우
+			return true;
+		} else {
+			// 토큰이 유효하지 않은 경우
+			return false;
+		}
+	}
+
+	@PostMapping("/changepw")
+	public boolean changePw(@RequestBody HashMap<String, Object> changeData) {
 		String token = (String) changeData.get("token");
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		User newUser = userService.findUser(username);
 		String newPw = (String) changeData.get("password");
+		System.out.println(token);
+		System.out.println(newPw);
 		newUser.setPassword(encoder.encode(newPw));
 		return userService.changePw(newUser);
-		
+
 	}
 
-	@PostMapping("/signout") public ResponseEntity<?> logoutUser(@RequestBody HashMap<String, Object> user) {
+	@PostMapping("/changeemail")
+	public ResponseEntity<?> changeEmail(@RequestBody HashMap<String, Object> changeData) {
+		String email = (String) changeData.get("email");
+		String newEmail = (String) changeData.get("newEmail");
+		User findUser = userService.checkAccount(email);
+		System.out.println(email);
+		System.out.println(newEmail);
+		userService.changeEmail(changeData);
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) userDetailServiceImpl
+				.loadUserByUsername(findUser.getUsername());
+
+		String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
+
+		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+		
+		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
+				userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhone(), roles));
+	}
+
+	@PostMapping("/signout")
+	public ResponseEntity<?> logoutUser(@RequestBody HashMap<String, Object> user) {
 
 		String userId = (String) user.get("id");
 		refreshTokenService.deleteByUserId(userId);

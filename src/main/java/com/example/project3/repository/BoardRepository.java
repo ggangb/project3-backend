@@ -38,4 +38,6 @@ public interface BoardRepository extends MongoRepository<Board, String> {
 	
 	Page<Board> findByUsername(Pageable pageable, String input);
 	
+	Page<Board> findByIdxIn(Pageable pageable, List<Long> boardList1);
+	
 }

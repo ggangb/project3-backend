@@ -2,6 +2,7 @@ package com.example.project3.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.example.project3.models.Recommend;
@@ -9,6 +10,8 @@ import com.example.project3.models.Recommend;
 public interface RecommendRepository extends MongoRepository<Recommend, String>{
 	
 	Recommend findByBoardId(Long boardId);
+
+	List<Recommend> findByRecommendUserIds(String username);
 	
 
 }

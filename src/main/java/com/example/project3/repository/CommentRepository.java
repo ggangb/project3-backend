@@ -35,4 +35,7 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 
 		List<Comment> existsByText(String input);
 
+
+		List<Comment> findByWriter(String username);
+
 }
