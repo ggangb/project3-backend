@@ -41,4 +41,18 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push kangbyeonggyu/footballmoaback:latest
+      - name: Configure AWS ECS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
+      - name: Deploy to AWS ECS
+        run: |
+          export AWS_ECS_CLUSTER_NAME=footballmoaback
+          export AWS_ECS_SERVICE_NAME=footballmoaservice
+          export AWS_ECS_CONTAINER_NAME=footballmoaback
+          export DOCKER_IMAGE_TAG=latest
+
+          aws ecs update-service --cluster $AWS_ECS_CLUSTER_NAME --service $AWS_ECS_SERVICE_NAME --force-new-deployment
