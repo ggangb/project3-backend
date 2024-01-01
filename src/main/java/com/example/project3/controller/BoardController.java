@@ -94,7 +94,7 @@ public class BoardController {
 	
 	@GetMapping("/test")
 	public void test() {
-		System.out.println("test");
+		System.out.println("testt");
 	}
 	@PostMapping("/board")
 	public ResponseEntity<?> boardSave(@RequestBody Board boardSave) {
