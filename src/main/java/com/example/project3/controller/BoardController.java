@@ -91,6 +91,11 @@ public class BoardController {
 		return page;
 		
 	}
+	
+	@GetMapping("/test")
+	public void test() {
+		System.out.println("test");
+	}
 	@PostMapping("/board")
 	public ResponseEntity<?> boardSave(@RequestBody Board boardSave) {
 		
