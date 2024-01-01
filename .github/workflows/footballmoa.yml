@@ -31,7 +31,7 @@ jobs:
         run: mvn clean package
 
       - name: Build Docker image
-        run: docker build -t footballmoaback .
+        run: docker build -t kangbyeonggyu/footballmoaback .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -40,5 +40,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Docker image to Docker Hub
-        run: docker push footballmoaback
+        run: docker push kangbyeonggyu/footballmoaback:latest
 
