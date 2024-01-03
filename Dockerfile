@@ -11,5 +11,5 @@ FROM openjdk:17
 WORKDIR /app
 # 빌드 스테이지에서 생성된 JAR 파일을 복사합니다.
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 80
+EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
