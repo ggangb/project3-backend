@@ -51,3 +51,4 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_7896b82d4efa424596370f00cebcb6ff }}
         images: 'footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5863c89935604b769239051e3b1e7eaa }}/footballmoaback:${{ github.sha }}'
+        arguments: --port=8080
