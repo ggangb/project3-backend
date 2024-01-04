@@ -40,7 +40,7 @@ jobs:
           registryPassword: ${{ secrets.DOCKERHUB_PASSWORD }}
           containerAppName: footballmoaback
           resourceGroup: ggang
-          imageToBuild: docker.io/kangbyoenggyu/footballmoaback:${{ github.sha }}
+          imageToBuild: kangbyoenggyu/footballmoaback:${{ github.sha }}
           
 
 
