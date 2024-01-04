@@ -15,8 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -24,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://footballmoabackregistry.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8bbe3ebc7d894333a46555a9bf64c767 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_4108d11d00424dd0853a595866ec8efd }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_193002250f644a25877f309b37656c1f }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_eef6103335684c3b8520eddfac0f696f }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8bbe3ebc7d894333a46555a9bf64c767 }}/footballmoaback:${{ github.sha }}
+        tags: footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_193002250f644a25877f309b37656c1f }}/footballmoabackregistry/footballmoaback:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,5 +47,5 @@ jobs:
       with:
         app-name: 'footballmoaback'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_717754165ed5469b930e73f78fb98180 }}
-        images: 'footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8bbe3ebc7d894333a46555a9bf64c767 }}/footballmoaback:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9a623a82b5d749cbbe44e8b3a95e606b }}
+        images: 'footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_193002250f644a25877f309b37656c1f }}/footballmoabackregistry/footballmoaback:${{ github.sha }}'
