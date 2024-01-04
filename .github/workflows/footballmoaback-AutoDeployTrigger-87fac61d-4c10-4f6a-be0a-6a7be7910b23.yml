@@ -35,12 +35,12 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }} 
-          registryUrl: dcoker.io
+          registryUrl: docker.io/kangbyeonggyu
           registryUsername: ${{ secrets.FOOTBALLMOABACK_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.FOOTBALLMOABACK_REGISTRY_PASSWORD }}
           containerAppName: footballmoaback
           resourceGroup: footballmoaback
-          imageToBuild: dcoker.io/footballmoaback:${{ github.sha }}
+          imageToBuild: dcoker.io/kangbyoenggyu/footballmoaback:${{ github.sha }}
           
 
 
