@@ -54,7 +54,7 @@ public class HomeController {
 	}
 	@GetMapping("/test")
 	public String keywordNews() {
-		return "test";
+		return "테스트";
 		
 	}
 	
