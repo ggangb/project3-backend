@@ -52,6 +52,11 @@ public class HomeController {
 		return apiService.getKeywordNews(start, keyword);
 		
 	}
+	@GetMapping("/test")
+	public String keywordNews() {
+		return "test";
+		
+	}
 	
 	@GetMapping("/trans")
 	public String trans() {
