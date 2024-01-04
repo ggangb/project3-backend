@@ -36,8 +36,8 @@ jobs:
         with:
           appSourcePath: ${{ github.workspace }} 
           registryUrl: index.docker.io/v1
-          registryUsername: ${{ secrets.FOOTBALLMOABACK_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.FOOTBALLMOABACK_REGISTRY_PASSWORD }}
+          registryUsername: ${{ secrets.DOCKERHUB_USERNAME }}
+          registryPassword: ${{ secrets.DOCKERHUB_PASSWORD }}
           containerAppName: footballmoaback
           resourceGroup: ggang
           imageToBuild: index.docker.io/v1/kangbyoenggyu/footballmoaback:${{ github.sha }}
