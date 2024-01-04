@@ -23,7 +23,9 @@ jobs:
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v2
-
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+      
       - name: Azure Login
         uses: azure/login@v1
         with:
