@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_2ce16898ce1c43aebfc4b5e5f7107887 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_4829842b716449f9a98d266645f00e81 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_de979d2124d54e6e8257595d568cc7c1 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_51085af04ecf41808b5873ce8fe007cf }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/kangbyeonggyu/footballmoaback
+        tags: index.docker.io/kangbyeonggyu/footballmoaback:latest
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'ggang'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_f15eaa9581e746ce87164f0631ffd9a3 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7951c2fcd424472996e2f77b932a4b6f }}
         images: 'index.docker.io/kangbyeonggyu/footballmoaback:latest'
