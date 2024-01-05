@@ -15,11 +15,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Create application.properties file
-      run: |
-        touch ./src/main/resources/application.properties
-        echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+    - run: touch ./src/main/resources/application.properties
+    - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+    - uses: actions/upload-artifact@v2
+      with:
+        name: application.properties
+        path: ./src/main/resources/application.properties
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
