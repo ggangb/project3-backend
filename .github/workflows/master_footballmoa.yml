@@ -35,6 +35,7 @@ jobs:
         push: true
         tags: footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_6c144a1559dc41b497c64874ff5c7245 }}/footballmoaback:${{ github.sha }}
         file: ./Dockerfile
+        no-cache: true
 
   deploy:
     runs-on: ubuntu-latest
