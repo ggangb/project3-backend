@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.project3.models.User;
 import com.example.project3.repository.UserRepository;
+import com.example.project3.security.jwt.advice.ErrorMessage;
 
 @Service
 public class UserService {
@@ -30,6 +31,10 @@ public class UserService {
 	
 	public User checkAccount(String email) {
 		Optional<User> findAccount = userRepository.findByEmail(email);
+		if (findAccount.isEmpty()) {
+	        
+			return null;
+	    }
 		return findAccount.get();
 	}
 	

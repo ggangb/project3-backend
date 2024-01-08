@@ -37,6 +37,7 @@ import com.example.project3.payload.response.TokenRefreshResponse;
 import com.example.project3.repository.RoleRepository;
 import com.example.project3.repository.UserRepository;
 import com.example.project3.security.jwt.JwtUtils;
+import com.example.project3.security.jwt.advice.ErrorMessage;
 import com.example.project3.security.jwt.exception.TokenRefreshException;
 import com.example.project3.service.EmailService;
 import com.example.project3.service.RefreshTokenService;
@@ -179,15 +180,20 @@ public class UserController {
 	}
 
 	@GetMapping("/findaccount/{email}")
-	public boolean findAccount(@PathVariable String email) {
-		System.out.println(email);
-		User findUser = userService.checkAccount(email);
-		String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
-		System.out.println(findUser.getUsername());
-		System.out.println(findUser.getPassword());
-		emailService.sendEmail(jwt, email);
+	public ResponseEntity<?> findAccount(@PathVariable String email) {
+		 if(userService.checkAccount(email) != null) {
+			 
+		        User findUser = userService.checkAccount(email);
+		        
+		        String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
+		        emailService.sendEmail(jwt, email);
+		        
+		        return ResponseEntity.ok(true);
+		    } else {
+		        // 예외 처리
+		    	return ResponseEntity.badRequest().body(new MessageResponse(email+"으로 등록된 계정이 없습니다."));
+		    }
 
-		return true;
 
 	}
 
@@ -223,22 +229,27 @@ public class UserController {
 		String email = (String) changeData.get("email");
 		String newEmail = (String) changeData.get("newEmail");
 		User findUser = userService.checkAccount(email);
-		System.out.println(email);
-		System.out.println(newEmail);
-		userService.changeEmail(changeData);
-		
-		UserDetailsImpl userDetails = (UserDetailsImpl) userDetailServiceImpl
-				.loadUserByUsername(findUser.getUsername());
-
-		String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
-
-		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-
-		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-		
-		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-				userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhone(), roles));
+		if(findUser != null) {
+			System.out.println(email);
+			System.out.println(newEmail);
+			userService.changeEmail(changeData);
+			
+			UserDetailsImpl userDetails = (UserDetailsImpl) userDetailServiceImpl
+					.loadUserByUsername(findUser.getUsername());
+			
+			String jwt = jwtUtils.generateTokenFromUsername(findUser.getUsername());
+			
+			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+					.collect(Collectors.toList());
+			
+			RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+			
+			return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
+					userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhone(), roles));
+			
+		} else {
+			return ResponseEntity.badRequest().body(new MessageResponse(email+"으로 등록된 계정이 없습니다."));
+		}
 	}
 
 	@PostMapping("/signout")
