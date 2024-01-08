@@ -14,8 +14,11 @@ public class ErrorMessage {
 	    this.message = message;
 	    this.description = description;
 	  }
+	  
 
-	  public int getStatusCode() {
+
+
+	public int getStatusCode() {
 	    return statusCode;
 	  }
 

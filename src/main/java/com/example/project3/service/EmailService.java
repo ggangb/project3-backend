@@ -14,7 +14,7 @@ public class EmailService {
 	        SimpleMailMessage message = new SimpleMailMessage();
 	        message.setTo(email);
 	        message.setSubject("비밀번호 재설정 링크입니다.");
-	        message.setText("http://localhost:8080/change?token="+jwt);
+	        message.setText("http://footballmoafront.azurewebsites.net/change?token="+jwt);
 	        javaMailSender.send(message);
 	    }
 
