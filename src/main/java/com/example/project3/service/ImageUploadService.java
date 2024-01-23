@@ -6,12 +6,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Service
 public class ImageUploadService {
+	
+	@Value("${editor.img}")
+	private String imgUrl;
 	
 	public Map<String,Object> imageSave(MultipartHttpServletRequest request) throws Exception {
 		MultipartFile uploadFile = request.getFile("upload");

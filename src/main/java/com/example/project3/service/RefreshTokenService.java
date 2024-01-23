@@ -16,7 +16,7 @@ import com.example.project3.security.jwt.exception.TokenRefreshException;
 
 @Service
 public class RefreshTokenService {
-	 @Value("${bezkoder.app.jwtRefreshExpirationMs}")
+	 @Value("${jwt.token.jwtRefreshExpirationMs}")
 	  private Long refreshTokenDurationMs;
 
 	  @Autowired
