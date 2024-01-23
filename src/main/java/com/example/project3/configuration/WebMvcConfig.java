@@ -11,7 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override 
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins("https://footballmoafront.azurewebsites.net")
+			.allowedOrigins("http://localhost:8080")
 			.allowedMethods("GET", "DELETE", "PUT", "POST", "OPTIONS")
 			.allowCredentials(true);
 	}

@@ -1,0 +1,48 @@
+name: Trigger auto deployment for footballmoaback
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ master ]
+    paths:
+    - '**'
+    - '.github/workflows/footballmoaback-AutoDeployTrigger-64bc14f3-2c27-4560-a67c-3ce909853c15.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+      
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.FOOTBALLMOABACK_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.FOOTBALLMOABACK_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.FOOTBALLMOABACK_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: footballmoabackregistry.azurecr.io
+          registryUsername: ${{ secrets.FOOTBALLMOABACK_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.FOOTBALLMOABACK_REGISTRY_PASSWORD }}
+          containerAppName: footballmoaback
+          resourceGroup: footballmoaback
+          imageToBuild: footballmoabackregistry.azurecr.io/footballmoaback:${{ github.sha }}
+          
+
+
