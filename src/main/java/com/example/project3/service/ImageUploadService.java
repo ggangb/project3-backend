@@ -6,32 +6,41 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobContainerClientBuilder;
+
 @Service
 public class ImageUploadService {
 	
-	@Value("${editor.img}")
-	private String imgUrl;
+	
+	@Value("${azure.storage.connection.string}")
+	private String connectionString;
+	
+	@Value("${azure.storage.container.name}")
+	private String containerName;
 	
 	public Map<String,Object> imageSave(MultipartHttpServletRequest request) throws Exception {
-		MultipartFile uploadFile = request.getFile("upload");
-		Map<String,Object> responseData = new HashMap<>();
-		System.out.println(request);
-		String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
-		UUID uuid = UUID.randomUUID();
-		String fileName = uuid + "_" + uploadFile.getOriginalFilename();
 		
-		File saveFile = new File(projectPath, fileName);
-		uploadFile.transferTo(saveFile);
-		String ImgUrl = imgUrl + fileName;
-//		ImageResponse response = new ImageResponse("http://localhost:3000/img/" + fileName);
+		MultipartFile uploadFile = request.getFile("upload");
+		
+		BlobContainerClient container = new BlobContainerClientBuilder()
+				.connectionString(connectionString)
+				.containerName(containerName)
+				.buildClient();
+		BlobClient blob = container.getBlobClient(uploadFile.getOriginalFilename());
+		
+		blob.upload(uploadFile.getInputStream(), uploadFile.getSize(), true);
+		Map<String,Object> responseData = new HashMap<>();
 		responseData.put("uploaded", true);
-		responseData.put("url", ImgUrl);
-		TimeUnit.SECONDS.sleep(3);
+		responseData.put("url", container.getBlobContainerUrl() + "/" + uploadFile.getOriginalFilename());		
+		
 		
 		return responseData;
 	}
