@@ -23,7 +23,7 @@ public class ImageUploadService {
 		
 		File saveFile = new File(projectPath, fileName);
 		uploadFile.transferTo(saveFile);
-		String ImgUrl = "http://localhost:3000/img/" + fileName;
+		String ImgUrl = "https://footballmoa.azurewebsites.net/img/" + fileName;
 //		ImageResponse response = new ImageResponse("http://localhost:3000/img/" + fileName);
 		responseData.put("uploaded", true);
 		responseData.put("url", ImgUrl);
