@@ -60,15 +60,7 @@ public class WebSecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("https://footballmoafront.azurewebsites.net")); // 클라이언트의 도메인으로 교체
-		configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT"));
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-	}
+	
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
