@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://footballmoabackregistry.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_3e24e72072f647ad919a0c3edd493176 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_cbf2de32c0754300a2f2932b78b49053 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_937c8a8382a948e59e8d03ee48626d51 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_ecc8e9d9d9874f1abcb1e45aa607ed4a }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_3e24e72072f647ad919a0c3edd493176 }}/footballmoaback:${{ github.sha }}
+        tags: footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_937c8a8382a948e59e8d03ee48626d51 }}/footballmoaback:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'footballmoa'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_ac6bf569a2a7472db94400987404acdb }}
-        images: 'footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_3e24e72072f647ad919a0c3edd493176 }}/footballmoaback:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_dbc6bdc9d0724ea384a4e650788fafe3 }}
+        images: 'footballmoabackregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_937c8a8382a948e59e8d03ee48626d51 }}/footballmoaback:${{ github.sha }}'
